@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: spring-boot-admin-dingtalk
+  profiles:
+    active: dev
+server:
+  port: 10000
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    health-check-url-path: /actuator/health
+  client:
+    registryFetchIntervalSeconds: 5
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+---
+spring:
+  profiles: dev
+  boot:
+    admin:
+      notify:
+        dingtalk:
+          enable: true
+          webhookToken: https://oapi.dingtalk.com/robot/send?access_token=dwgqiy29172hdqi72ih
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  http://127.0.0.1:8000/eureka/
+
+---
+spring:
+  profiles: prod
+  security:
+    user:
+      name: "admin"
+      password: "admin"
+  boot:
+    admin:
+      notify:
+        dingtalk:
+          enable: true
+          webhookToken: https://oapi.dingtalk.com/robot/send?access_token=180dhi3q7629dhawue2
+eureka:
+  instance:
+    metadata-map:
+      user.name: ${spring.security.user.name}
+      user.password: ${spring.security.user.password}
+  client:
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8000/eureka/
